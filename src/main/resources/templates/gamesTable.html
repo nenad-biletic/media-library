@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Games</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+  <h1>Games</h1>
+  <div class="content-container">
+    <div class="table-container">
+      <div class="table-body-container">
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Year of Release</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Iterate over the list of games -->
+          <tr th:each="game : ${games}">
+            <td th:text="${game.id}">1</td>
+            <td th:text="${game.title}">Game Title</td>
+            <td th:text="${game.genre}">Action</td>
+            <td th:text="${game.yearOfRelease}">2022</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <a href="#" th:href="@{/library/games/add}" class="button">Add new Game</a>
+      <a href="#" th:href="@{/library/games/update}" class="button">Update Game</a>
+      <a href="#" th:href="@{/library/games/delete}" class="button">Delete Game</a>
+      <a href="#" th:href="@{/library}" class="button">Back</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

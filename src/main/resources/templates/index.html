@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Media Library</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+  <h1>Media Library</h1>
+  <div>
+    <a href="#" th:href="@{/library/books}" class="button">Books</a>
+    <a href="#" th:href="@{/library/games}" class="button">Games</a>
+    <a href="#" th:href="@{/library/movies}" class="button">Movies</a>
+    <a href="#" th:href="@{/library/series}" class="button">Series</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Series</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+  <h1>Series</h1>
+  <div class="content-container">
+    <div class="table-container">
+      <div class="table-body-container">
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Number of Seasons</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Iterate over the list of series -->
+          <tr th:each="serie : ${series}">
+            <td th:text="${serie.id}">1</td>
+            <td th:text="${serie.title}">Series Title</td>
+            <td th:text="${serie.genre}">Action</td>
+            <td th:text="${serie.numberOfSeasons}">5</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <a href="#" th:href="@{/library/series/add}" class="button">Add new Series</a>
+      <a href="#" th:href="@{/library/series/update}" class="button">Update Series</a>
+      <a href="#" th:href="@{/library/series/delete}" class="button">Delete Series</a>
+      <a href="#" th:href="@{/library}" class="button">Back</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add new Game</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<form th:action="@{/library/games/save}" th:object="${game}" method="post">
+  <div class="container">
+    <h1>Add new Game</h1>
+    <div class="content-container">
+      <div class="table-container">
+        <div class="table-body-container">
+          <table>
+            <tbody>
+            <tr>
+              <td><label for="title">Title:</label></td>
+              <td><input type="text" id="title" th:field="*{title}" required/></td>
+            </tr>
+            <tr>
+              <td><label for="genre">Genre:</label></td>
+              <td><input type="text" id="genre" th:field="*{genre}" required/></td>
+            </tr>
+            <tr>
+              <td><label for="yearOfRelease">Year of Release:</label></td>
+              <td><input type="text" id="yearOfRelease" th:field="*{yearOfRelease}" required/></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <button type="submit" class="button">Add Game</button>
+        <a href="#" th:href="@{/library/games}" class="button">Back</a>
+      </div>
+    </div>
+    <h3 th:if="${success}" style="color: green;" th:text="${success}"></h3>
+    <h3 th:if="${error}" style="color: red;" th:text="${error}"></h3>
+  </div>
+</form>
+</body>
+</html>

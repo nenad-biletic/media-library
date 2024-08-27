@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Series</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<form th:action="@{/library/series/update}" th:object="${series}" method="post">
+  <input type="hidden" name="_method" value="put"/>
+  <div class="container">
+    <h1>Update Series</h1>
+    <div class="content-container">
+      <div class="table-container">
+        <div class="table-body-container">
+          <table>
+            <tbody>
+            <tr>
+              <td><label for="id">ID:</label></td>
+              <td><input type="text" id="id" th:field="*{id}" required/></td>
+            </tr>
+            <tr>
+              <td><label for="title">Title:</label></td>
+              <td><input type="text" id="title" th:field="*{title}" required/></td>
+            </tr>
+            <tr>
+              <td><label for="genre">Genre:</label></td>
+              <td><input type="text" id="genre" th:field="*{genre}" required/></td>
+            </tr>
+            <tr>
+              <td><label for="numberOfSeasons">Number of Seasons:</label></td>
+              <td><input type="text" id="numberOfSeasons" th:field="*{numberOfSeasons}" required/>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <button type="submit" class="button">Update Series</button>
+        <a href="#" th:href="@{/library/series}" class="button">Back</a>
+      </div>
+    </div>
+    <h3 th:if="${success}" style="color: green;" th:text="${success}"></h3>
+    <h3 th:if="${error}" style="color: red;" th:text="${error}"></h3>
+  </div>
+</form>
+</body>
+</html>
