@@ -37,7 +37,7 @@ public class SeriesController {
     this.seriesService = seriesService;
   }
 
-  @GetMapping("/add")
+  @GetMapping("/save")
   public String addSeries(Model model) {
     model.addAttribute(SERIES, new Series());
     return ADD_SERIES;
@@ -98,9 +98,9 @@ public class SeriesController {
   }
 
   @DeleteMapping("/delete")
-  public String deleteSeries(Model model, @RequestParam Long id) {
+  public String deleteSeries(Model model, @RequestParam Long seriesId) {
     try {
-      String result = seriesService.deleteSeries(id);
+      String result = seriesService.deleteSeries(seriesId);
       model.addAttribute(SUCCESS, result);
     } catch (NoSuchMediaExistsException e) {
       model.addAttribute(ERROR, e.getMessage());

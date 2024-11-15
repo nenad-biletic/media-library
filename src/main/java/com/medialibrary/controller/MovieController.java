@@ -38,7 +38,7 @@ public class MovieController {
     this.movieService = movieService;
   }
 
-  @GetMapping("/add")
+  @GetMapping("/save")
   public String addMovie(Model model) {
     model.addAttribute(MOVIE, new Movie());
     return ADD_MOVIE;
@@ -106,9 +106,9 @@ public class MovieController {
   }
 
   @DeleteMapping("/delete")
-  public String deleteMovie(Model model, @RequestParam Long id) {
+  public String deleteMovie(Model model, @RequestParam Long movieId) {
     try {
-      String result = movieService.deleteMovie(id);
+      String result = movieService.deleteMovie(movieId);
       model.addAttribute(SUCCESS, result);
     } catch (NoSuchMediaExistsException e) {
       model.addAttribute(ERROR, e.getMessage());

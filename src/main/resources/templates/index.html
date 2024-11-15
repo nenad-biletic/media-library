@@ -9,10 +9,13 @@
 <div class="container">
   <h1>Media Library</h1>
   <div>
-    <a href="#" th:href="@{/library/books}" class="button">Books</a>
-    <a href="#" th:href="@{/library/games}" class="button">Games</a>
-    <a href="#" th:href="@{/library/movies}" class="button">Movies</a>
-    <a href="#" th:href="@{/library/series}" class="button">Series</a>
+    <a th:href="@{/library/books}" class="button">Books</a>
+    <a th:href="@{/library/games}" class="button">Games</a>
+    <a th:href="@{/library/movies}" class="button">Movies</a>
+    <a th:href="@{/library/series}" class="button">Series</a>
+    <form th:action="@{/logout}" method="post">
+      <button type="submit" class="logout-button">Sign out</button>
+    </form>
   </div>
 </div>
 </body>

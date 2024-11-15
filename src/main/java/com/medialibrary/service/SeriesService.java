@@ -3,52 +3,71 @@ package com.medialibrary.service;
 import static com.medialibrary.constants.FieldNames.ID;
 import static com.medialibrary.constants.FieldNames.TITLE;
 
+import com.medialibrary.authentication.AuthenticationService;
 import com.medialibrary.exception.MediaAlreadyExistsException;
 import com.medialibrary.exception.NoSuchMediaExistsException;
 import com.medialibrary.model.Series;
+import com.medialibrary.model.User;
 import com.medialibrary.repository.SeriesRepository;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class SeriesService {
 
   private final SeriesRepository seriesRepository;
+  private final AuthenticationService authenticationService;
 
-  public SeriesService(@Autowired SeriesRepository seriesRepository) {
+  @Autowired
+  public SeriesService(SeriesRepository seriesRepository,
+      AuthenticationService authenticationService) {
     this.seriesRepository = seriesRepository;
+    this.authenticationService = authenticationService;
   }
 
   public String saveSeries(Series series) {
-    Series existingSeries = seriesRepository.findByTitle(series.getTitle());
-    if (existingSeries == null) {
+    User user = authenticationService.getCurrentUser();
+    Optional<Series> seriesOpt = seriesRepository.findByTitle(series.getTitle(), user.getId());
+
+    if (seriesOpt.isPresent()) {
+      throw new MediaAlreadyExistsException(
+          "Series with title '" + series.getTitle() + "' already exists!");
+    } else {
+      series.setUser(user);
       seriesRepository.save(series);
       return "Series saved successfully.";
-    } else {
-      throw new MediaAlreadyExistsException("Series already exists!");
     }
   }
 
   public List<Series> getSeries() {
-    return seriesRepository.findAll(Sort.by(Direction.ASC, ID));
+    User user = authenticationService.getCurrentUser();
+    return seriesRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, ID));
   }
 
   public List<Series> getSeriesSortedByName() {
-    return seriesRepository.findAll(Sort.by(Direction.ASC, TITLE));
+    User user = authenticationService.getCurrentUser();
+    return seriesRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, TITLE));
   }
 
   public List<Series> getSeriesByGenre(String genre) {
-    return seriesRepository.findByGenre(genre, Sort.by(Direction.ASC, TITLE));
+    User user = authenticationService.getCurrentUser();
+    return seriesRepository.findByGenre(genre, user.getId(), Sort.by(Direction.ASC, TITLE));
   }
 
   public String updateSeries(Series series) {
-    Series existingSeries = seriesRepository.findById(series.getId()).orElse(null);
-    if (existingSeries == null) {
+    User user = authenticationService.getCurrentUser();
+    Optional<Series> seriesOpt = seriesRepository.findByTitle(series.getTitle(), user.getId());
+
+    if (seriesOpt.isEmpty()) {
       throw new NoSuchMediaExistsException("Series with ID " + series.getId() + " does not exist!");
     } else {
+      Series existingSeries = seriesOpt.get();
       existingSeries.setTitle(series.getTitle());
       existingSeries.setGenre(series.getGenre());
       existingSeries.setNumberOfSeasons(series.getNumberOfSeasons());
@@ -57,12 +76,14 @@ public class SeriesService {
     }
   }
 
-  public String deleteSeries(Long id) {
-    Series existingSeries = seriesRepository.findById(id).orElse(null);
-    if (existingSeries == null) {
-      throw new NoSuchMediaExistsException("Series with ID " + id + " does not exist!");
+  public String deleteSeries(Long seriesId) {
+    User user = authenticationService.getCurrentUser();
+    Optional<Series> seriesOpt = seriesRepository.findByUserIdAndSeriesId(user.getId(), seriesId);
+
+    if (seriesOpt.isEmpty()) {
+      throw new NoSuchMediaExistsException("Series with ID " + seriesId + " does not exist!");
     } else {
-      seriesRepository.deleteById(id);
+      seriesRepository.deleteById(seriesId);
       return "Series deleted successfully.";
     }
   }

@@ -38,7 +38,7 @@ public class BookController {
     this.bookService = bookService;
   }
 
-  @GetMapping("/add")
+  @GetMapping("/save")
   public String addBook(Model model) {
     model.addAttribute(BOOK, new Book());
     return ADD_BOOK;
@@ -106,9 +106,9 @@ public class BookController {
   }
 
   @DeleteMapping("/delete")
-  public String deleteBook(Model model, @RequestParam Long id) {
+  public String deleteBook(Model model, @RequestParam Long bookId) {
     try {
-      String result = bookService.deleteBook(id);
+      String result = bookService.deleteBook(bookId);
       model.addAttribute(SUCCESS, result);
     } catch (NoSuchMediaExistsException e) {
       model.addAttribute(ERROR, e.getMessage());

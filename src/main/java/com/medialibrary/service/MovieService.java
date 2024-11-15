@@ -3,57 +3,77 @@ package com.medialibrary.service;
 import static com.medialibrary.constants.FieldNames.ID;
 import static com.medialibrary.constants.FieldNames.TITLE;
 
+import com.medialibrary.authentication.AuthenticationService;
 import com.medialibrary.exception.MediaAlreadyExistsException;
 import com.medialibrary.exception.NoSuchMediaExistsException;
 import com.medialibrary.model.Movie;
+import com.medialibrary.model.User;
 import com.medialibrary.repository.MovieRepository;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MovieService {
 
   private final MovieRepository movieRepository;
+  private final AuthenticationService authenticationService;
 
-  public MovieService(@Autowired MovieRepository movieRepository) {
+  @Autowired
+  public MovieService(MovieRepository movieRepository,
+      AuthenticationService authenticationService) {
     this.movieRepository = movieRepository;
+    this.authenticationService = authenticationService;
   }
 
   public String saveMovie(Movie movie) {
-    Movie existingMovie = movieRepository.findByTitle(movie.getTitle());
-    if (existingMovie == null) {
+    User user = authenticationService.getCurrentUser();
+    Optional<Movie> movieOpt = movieRepository.findByTitle(movie.getTitle(), user.getId());
+
+    if (movieOpt.isPresent()) {
+      throw new MediaAlreadyExistsException(
+          "Movie with title '" + movie.getTitle() + "' already exists!");
+    } else {
+      movie.setUser(user);
       movieRepository.save(movie);
       return "Movie saved successfully.";
-    } else {
-      throw new MediaAlreadyExistsException("Movie already exists!");
     }
   }
 
   public List<Movie> getMovies() {
-    return movieRepository.findAll(Sort.by(Direction.ASC, ID));
+    User user = authenticationService.getCurrentUser();
+    return movieRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, ID));
   }
 
   public List<Movie> getMoviesSortedByName() {
-    return movieRepository.findAll(Sort.by(Direction.ASC, TITLE));
+    User user = authenticationService.getCurrentUser();
+    return movieRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, TITLE));
   }
 
   public List<Movie> getMoviesByGenre(String genre) {
-    return movieRepository.findByGenre(genre, Sort.by(Direction.ASC, TITLE));
+    User user = authenticationService.getCurrentUser();
+    return movieRepository.findByGenre(genre, user.getId(), Sort.by(Direction.ASC, TITLE));
   }
 
   public List<Movie> getMoviesByYearOfRelease(Integer yearOfRelease) {
-    return movieRepository.findByYearOfRelease(yearOfRelease,
+    User user = authenticationService.getCurrentUser();
+    return movieRepository.findByYearOfRelease(yearOfRelease, user.getId(),
         Sort.by(Direction.ASC, TITLE));
   }
 
   public String updateMovie(Movie movie) {
-    Movie existingMovie = movieRepository.findById(movie.getId()).orElse(null);
-    if (existingMovie == null) {
+    User user = authenticationService.getCurrentUser();
+    Optional<Movie> movieOpt = movieRepository.findByUserIdAndMovieId(user.getId(), movie.getId());
+
+    if (movieOpt.isEmpty()) {
       throw new NoSuchMediaExistsException("Movie with ID " + movie.getId() + " does not exist!");
     } else {
+      Movie existingMovie = movieOpt.get();
       existingMovie.setTitle(movie.getTitle());
       existingMovie.setGenre(movie.getGenre());
       existingMovie.setYearOfRelease(movie.getYearOfRelease());
@@ -62,12 +82,14 @@ public class MovieService {
     }
   }
 
-  public String deleteMovie(Long id) {
-    Movie existingMovie = movieRepository.findById(id).orElse(null);
-    if (existingMovie == null) {
-      throw new NoSuchMediaExistsException("Movie with ID " + id + " does not exist!");
+  public String deleteMovie(Long movieId) {
+    User user = authenticationService.getCurrentUser();
+    Optional<Movie> movieOpt = movieRepository.findByUserIdAndMovieId(user.getId(), movieId);
+
+    if (movieOpt.isEmpty()) {
+      throw new NoSuchMediaExistsException("Movie with ID " + movieId + " does not exist!");
     } else {
-      movieRepository.deleteById(id);
+      movieRepository.deleteById(movieId);
       return "Movie deleted successfully.";
     }
   }

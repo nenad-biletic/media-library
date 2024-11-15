@@ -38,7 +38,7 @@ public class GameController {
     this.gameService = gameService;
   }
 
-  @GetMapping("/add")
+  @GetMapping("/save")
   public String addGame(Model model) {
     model.addAttribute(GAME, new Game());
     return ADD_GAME;
@@ -106,9 +106,9 @@ public class GameController {
   }
 
   @DeleteMapping("/delete")
-  public String deleteGame(Model model, @RequestParam Long id) {
+  public String deleteGame(Model model, @RequestParam Long gameId) {
     try {
-      String result = gameService.deleteGame(id);
+      String result = gameService.deleteGame(gameId);
       model.addAttribute(SUCCESS, result);
     } catch (NoSuchMediaExistsException e) {
       model.addAttribute(ERROR, e.getMessage());
