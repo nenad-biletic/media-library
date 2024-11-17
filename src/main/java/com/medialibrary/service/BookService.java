@@ -1,8 +1,5 @@
 package com.medialibrary.service;
 
-import static com.medialibrary.constants.FieldNames.ID;
-import static com.medialibrary.constants.FieldNames.TITLE;
-
 import com.medialibrary.authentication.AuthenticationService;
 import com.medialibrary.exception.MediaAlreadyExistsException;
 import com.medialibrary.exception.NoSuchMediaExistsException;
@@ -12,8 +9,6 @@ import com.medialibrary.repository.BookRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,22 +41,17 @@ public class BookService {
 
   public List<Book> getBooks() {
     User user = authenticationService.getCurrentUser();
-    return bookRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, ID));
-  }
-
-  public List<Book> getBooksSortedByName() {
-    User user = authenticationService.getCurrentUser();
-    return bookRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, TITLE));
+    return bookRepository.findByUserId(user.getId());
   }
 
   public List<Book> getBooksByAuthor(String author) {
     User user = authenticationService.getCurrentUser();
-    return bookRepository.findByAuthor(author, user.getId(), Sort.by(Direction.ASC, TITLE));
+    return bookRepository.findByAuthor(author, user.getId());
   }
 
   public List<Book> getBooksByGenre(String genre) {
     User user = authenticationService.getCurrentUser();
-    return bookRepository.findByGenre(genre, user.getId(), Sort.by(Direction.ASC, TITLE));
+    return bookRepository.findByGenre(genre, user.getId());
   }
 
   public String updateBook(Book book) {

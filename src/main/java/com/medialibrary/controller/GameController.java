@@ -62,13 +62,6 @@ public class GameController {
     return GAMES_TABLE;
   }
 
-  @GetMapping("/sort")
-  public String getGamesSortedByName(Model model) {
-    games = gameService.getGamesSortedByName();
-    model.addAttribute(GAMES, games);
-    return GAMES_TABLE;
-  }
-
   @GetMapping("/genre/{genre}")
   public String getGamesByGenre(Model model, @PathVariable String genre) {
     games = gameService.getGamesByGenre(genre);

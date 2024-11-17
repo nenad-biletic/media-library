@@ -62,13 +62,6 @@ public class MovieController {
     return MOVIES_TABLE;
   }
 
-  @GetMapping("/sort")
-  public String getMoviesSortedByName(Model model) {
-    movies = movieService.getMoviesSortedByName();
-    model.addAttribute(MOVIES, movies);
-    return MOVIES_TABLE;
-  }
-
   @GetMapping("/genre/{genre}")
   public String getMoviesByGenre(Model model, @PathVariable String genre) {
     movies = movieService.getMoviesByGenre(genre);

@@ -1,8 +1,5 @@
 package com.medialibrary.service;
 
-import static com.medialibrary.constants.FieldNames.ID;
-import static com.medialibrary.constants.FieldNames.TITLE;
-
 import com.medialibrary.authentication.AuthenticationService;
 import com.medialibrary.exception.MediaAlreadyExistsException;
 import com.medialibrary.exception.NoSuchMediaExistsException;
@@ -12,8 +9,6 @@ import com.medialibrary.repository.SeriesRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,17 +42,12 @@ public class SeriesService {
 
   public List<Series> getSeries() {
     User user = authenticationService.getCurrentUser();
-    return seriesRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, ID));
-  }
-
-  public List<Series> getSeriesSortedByName() {
-    User user = authenticationService.getCurrentUser();
-    return seriesRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, TITLE));
+    return seriesRepository.findByUserId(user.getId());
   }
 
   public List<Series> getSeriesByGenre(String genre) {
     User user = authenticationService.getCurrentUser();
-    return seriesRepository.findByGenre(genre, user.getId(), Sort.by(Direction.ASC, TITLE));
+    return seriesRepository.findByGenre(genre, user.getId());
   }
 
   public String updateSeries(Series series) {

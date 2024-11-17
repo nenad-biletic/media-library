@@ -1,8 +1,5 @@
 package com.medialibrary.service;
 
-import static com.medialibrary.constants.FieldNames.ID;
-import static com.medialibrary.constants.FieldNames.TITLE;
-
 import com.medialibrary.authentication.AuthenticationService;
 import com.medialibrary.exception.MediaAlreadyExistsException;
 import com.medialibrary.exception.NoSuchMediaExistsException;
@@ -12,8 +9,6 @@ import com.medialibrary.repository.MovieRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,23 +42,17 @@ public class MovieService {
 
   public List<Movie> getMovies() {
     User user = authenticationService.getCurrentUser();
-    return movieRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, ID));
-  }
-
-  public List<Movie> getMoviesSortedByName() {
-    User user = authenticationService.getCurrentUser();
-    return movieRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, TITLE));
+    return movieRepository.findByUserId(user.getId());
   }
 
   public List<Movie> getMoviesByGenre(String genre) {
     User user = authenticationService.getCurrentUser();
-    return movieRepository.findByGenre(genre, user.getId(), Sort.by(Direction.ASC, TITLE));
+    return movieRepository.findByGenre(genre, user.getId());
   }
 
   public List<Movie> getMoviesByYearOfRelease(Integer yearOfRelease) {
     User user = authenticationService.getCurrentUser();
-    return movieRepository.findByYearOfRelease(yearOfRelease, user.getId(),
-        Sort.by(Direction.ASC, TITLE));
+    return movieRepository.findByYearOfRelease(yearOfRelease, user.getId());
   }
 
   public String updateMovie(Movie movie) {

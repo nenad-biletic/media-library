@@ -62,13 +62,6 @@ public class BookController {
     return BOOKS_TABLE;
   }
 
-  @GetMapping("/sort")
-  public String getBooksSortedByName(Model model) {
-    books = bookService.getBooksSortedByName();
-    model.addAttribute(BOOKS, books);
-    return BOOKS_TABLE;
-  }
-
   @GetMapping("/author/{author}")
   public String getBooksByAuthor(Model model, @PathVariable String author) {
     books = bookService.getBooksByAuthor(author);

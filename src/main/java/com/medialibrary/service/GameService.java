@@ -1,8 +1,5 @@
 package com.medialibrary.service;
 
-import static com.medialibrary.constants.FieldNames.ID;
-import static com.medialibrary.constants.FieldNames.TITLE;
-
 import com.medialibrary.authentication.AuthenticationService;
 import com.medialibrary.exception.MediaAlreadyExistsException;
 import com.medialibrary.exception.NoSuchMediaExistsException;
@@ -12,8 +9,6 @@ import com.medialibrary.repository.GameRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,23 +41,17 @@ public class GameService {
 
   public List<Game> getGames() {
     User user = authenticationService.getCurrentUser();
-    return gameRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, ID));
-  }
-
-  public List<Game> getGamesSortedByName() {
-    User user = authenticationService.getCurrentUser();
-    return gameRepository.findByUserId(user.getId(), Sort.by(Direction.ASC, TITLE));
+    return gameRepository.findByUserId(user.getId());
   }
 
   public List<Game> getGamesByGenre(String genre) {
     User user = authenticationService.getCurrentUser();
-    return gameRepository.findByGenre(genre, user.getId(), Sort.by(Direction.ASC, TITLE));
+    return gameRepository.findByGenre(genre, user.getId());
   }
 
   public List<Game> getGamesByYearOfRelease(Integer yearOfRelease) {
     User user = authenticationService.getCurrentUser();
-    return gameRepository.findByYearOfRelease(yearOfRelease, user.getId(),
-        Sort.by(Direction.ASC, TITLE));
+    return gameRepository.findByYearOfRelease(yearOfRelease, user.getId());
   }
 
   public String updateGame(Game game) {

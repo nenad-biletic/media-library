@@ -61,13 +61,6 @@ public class SeriesController {
     return SERIES_TABLE;
   }
 
-  @GetMapping("/sort")
-  public String getSeriesSortedByName(Model model) {
-    series = seriesService.getSeriesSortedByName();
-    model.addAttribute(SERIES, series);
-    return SERIES_TABLE;
-  }
-
   @GetMapping("/genre/{genre}")
   public String getSeriesByGenre(Model model, @PathVariable String genre) {
     series = seriesService.getSeriesByGenre(genre);
